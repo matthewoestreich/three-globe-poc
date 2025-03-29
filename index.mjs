@@ -10,14 +10,6 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById(RENDER_GLOBE_DOM_ELEMENT_ID).appendChild(renderer.domElement);
 
-// Setup scene
-const scene = new THREE.Scene();
-scene.add(new THREE.AmbientLight(0xbbbbbb, 0.3));
-scene.background = new THREE.Color(0x040d21);
-
-// Setup camera
-const camera = new THREE.PerspectiveCamera();
-
 // Setup light sources
 const mainDirectionalLight = new THREE.DirectionalLight(0xffffff, 8);
 mainDirectionalLight.position.set(-800, 2000, 400);
@@ -28,24 +20,28 @@ secondaryDirectionalLight.position.set(-200, 500, 200);
 const pointLight = new THREE.PointLight(0x8566cc, 4.1);
 pointLight.position.set(-200, 500, 200);
 
-// Orbit controls
-const orbitControls = new OrbitControls(camera, renderer.domElement);
-/*** DISABLE ABILITY TO ZOOM */
-orbitControls.enableZoom = false;
-
-// Add camera properties
-camera.add(mainDirectionalLight);
-camera.add(secondaryDirectionalLight);
-camera.add(pointLight);
+// Setup camera
+const camera = new THREE.PerspectiveCamera();
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.position.z = 400;
 camera.position.x = 0;
 camera.position.y = 0;
+camera.add(mainDirectionalLight);
+camera.add(secondaryDirectionalLight);
+camera.add(pointLight);
 camera.updateProjectionMatrix();
 
-// Add camera to scene
-scene.add(camera);
+// Setup scene
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x040d21);
 scene.fog = new THREE.Fog(0x535ef3, 400, 2000);
+scene.add(new THREE.AmbientLight(0xbbbbbb, 0.3));
+scene.add(camera);
+
+// Orbit controls
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+/*** DISABLE ABILITY TO ZOOM */
+orbitControls.enableZoom = false;
 
 // Create Globe
 const Globe = new ThreeGlobe({
