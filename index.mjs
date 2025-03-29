@@ -19,11 +19,11 @@ scene.background = new THREE.Color(0x040d21);
 const camera = new THREE.PerspectiveCamera();
 
 // Setup light sources
-const directionalLight = new THREE.DirectionalLight(0xffffff, 8);
-directionalLight.position.set(-800, 2000, 400);
+const mainDirectionalLight = new THREE.DirectionalLight(0xffffff, 8);
+mainDirectionalLight.position.set(-800, 2000, 400);
 
-const dLight1 = new THREE.DirectionalLight(0x7982f6, 8.2);
-dLight1.position.set(-200, 500, 200);
+const secondaryDirectionalLight = new THREE.DirectionalLight(0x7982f6, 8.2);
+secondaryDirectionalLight.position.set(-200, 500, 200);
 
 const pointLight = new THREE.PointLight(0x8566cc, 4.1);
 pointLight.position.set(-200, 500, 200);
@@ -34,8 +34,8 @@ const orbitControls = new OrbitControls(camera, renderer.domElement);
 orbitControls.enableZoom = false;
 
 // Add camera properties
-camera.add(directionalLight);
-camera.add(dLight1);
+camera.add(mainDirectionalLight);
+camera.add(secondaryDirectionalLight);
 camera.add(pointLight);
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.position.z = 400;
