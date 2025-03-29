@@ -47,12 +47,13 @@ camera.updateProjectionMatrix();
 scene.add(camera);
 scene.fog = new THREE.Fog(0x535ef3, 400, 2000);
 
-// prettier-ignore
+// Create Globe
 const Globe = new ThreeGlobe({
 	waitForGlobeReady: true,
 	animateIn: true,
 });
 
+// Add Globe properties
 Globe
 	.hexPolygonsData(GLOBE_DATA.features)
 	.hexPolygonResolution(3)
