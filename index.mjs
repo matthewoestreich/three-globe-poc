@@ -4,6 +4,29 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js?exte
 
 const RENDER_GLOBE_DOM_ELEMENT_ID = "render-globe";
 
+// Create Globe
+const Globe = new ThreeGlobe({
+	waitForGlobeReady: true,
+	animateIn: true,
+});
+
+// Add Globe properties
+Globe
+	.hexPolygonsData(GLOBE_DATA.features)
+	.hexPolygonResolution(3)
+	.hexPolygonMargin(0.7)
+	.showAtmosphere(true)
+	.atmosphereColor("#3a228a")
+	.atmosphereAltitude(0.25)
+	.hexPolygonColor(() => "#ffffff");
+
+// Add material to globe
+const globeMaterial = Globe.globeMaterial();
+globeMaterial.color = new THREE.Color(0x3a228a);
+globeMaterial.emissive = new THREE.Color(0x220038);
+globeMaterial.emissiveIntensity = 0.1;
+globeMaterial.shininess = 0.9;
+
 // Setup renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -36,36 +59,13 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x040d21);
 scene.fog = new THREE.Fog(0x535ef3, 400, 2000);
 scene.add(new THREE.AmbientLight(0xbbbbbb, 0.3));
+scene.add(Globe);
 scene.add(camera);
 
 // Orbit controls
 const orbitControls = new OrbitControls(camera, renderer.domElement);
 /*** DISABLE ABILITY TO ZOOM */
 orbitControls.enableZoom = false;
-
-// Create Globe
-const Globe = new ThreeGlobe({
-	waitForGlobeReady: true,
-	animateIn: true,
-});
-
-// Add Globe properties
-Globe
-	.hexPolygonsData(GLOBE_DATA.features)
-	.hexPolygonResolution(3)
-	.hexPolygonMargin(0.7)
-	.showAtmosphere(true)
-	.atmosphereColor("#3a228a")
-	.atmosphereAltitude(0.25)
-	.hexPolygonColor(() => "#ffffff");
-
-const globeMaterial = Globe.globeMaterial();
-globeMaterial.color = new THREE.Color(0x3a228a);
-globeMaterial.emissive = new THREE.Color(0x220038);
-globeMaterial.emissiveIntensity = 0.1;
-globeMaterial.shininess = 0.9;
-
-scene.add(Globe);
 
 function animate() {
 	orbitControls.update();
