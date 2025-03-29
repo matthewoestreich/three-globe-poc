@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>three-globe-poc</title>
+		<style>
+			body {
+				margin: 0;
+			}
+		</style>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "https://esm.sh/three",
+					"three/": "https://esm.sh/three/"
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div id="render-globe"></div>
+    <script src="./GLOBE_DATA.js"></script>
+		<script type="module" src="./index.mjs"></script>
+	</body>
+</html>
