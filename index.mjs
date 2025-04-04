@@ -6,15 +6,33 @@ const RENDER_GLOBE_DOM_ELEMENT_ID = "render-globe";
 
 /**
  * Animation function to start animating our program.
- * @param {OrbitControls} orbitControls 
- * @param {THREE.WebGLRenderer} renderer 
- * @param {THREE.Scene} scene 
- * @param {THREE.PerspectiveCamera} camera 
+ * @param {OrbitControls} orbitControls
+ * @param {THREE.WebGLRenderer} renderer
+ * @param {THREE.Scene} scene
+ * @param {THREE.PerspectiveCamera} camera
  */
 function animate(orbitControls, renderer, scene, camera) {
 	requestAnimationFrame(() => animate(orbitControls, renderer, scene, camera));
 	orbitControls.update();
 	renderer.render(scene, camera);
+}
+
+/**
+ * Make things responsive by handling window resize. Debounce for performance.
+ * @param {THREE.WebGLRenderer} renderer
+ * @param {THREE.PerspectiveCamera} camera
+ * @param {number} debounceMs : ms for debounce
+ */
+function handleWindowResize(renderer, camera, debounceMs = 150) {
+	let resizeTimeout;
+	return () => {
+		clearTimeout(resizeTimeout);
+		resizeTimeout = setTimeout(() => {
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+		}, debounceMs);
+	};
 }
 
 // Create Globe
@@ -24,8 +42,7 @@ const Globe = new ThreeGlobe({
 });
 
 // Add Globe properties
-Globe
-	.hexPolygonsData(GLOBE_DATA.features)
+Globe.hexPolygonsData(GLOBE_DATA.features)
 	.hexPolygonResolution(3)
 	.hexPolygonMargin(0.7)
 	.showAtmosphere(true)
@@ -58,9 +75,9 @@ pointCameraLight.position.set(-200, 500, 200);
 // Setup camera
 const camera = new THREE.PerspectiveCamera();
 camera.aspect = window.innerWidth / window.innerHeight;
-camera.position.z = 400;
-camera.position.x = 0;
-camera.position.y = 0;
+camera.position.z = -38;
+camera.position.x = -288.1;
+camera.position.y = 264;
 camera.add(mainDirectionalCameraLight);
 camera.add(secondaryDirectionalCameraLight);
 camera.add(pointCameraLight);
@@ -84,6 +101,9 @@ orbitControls.enableZoom = false;
 
 // Add renderer to DOM
 document.getElementById(RENDER_GLOBE_DOM_ELEMENT_ID).appendChild(renderer.domElement);
+
+// Make things responsive.
+window.onresize = handleWindowResize(renderer, camera, 100);
 
 // Begin animation
 animate(orbitControls, renderer, scene, camera);
