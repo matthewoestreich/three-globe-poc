@@ -4,6 +4,19 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js?exte
 
 const RENDER_GLOBE_DOM_ELEMENT_ID = "render-globe";
 
+/**
+ * Animation function to start animating our program.
+ * @param {OrbitControls} orbitControls 
+ * @param {THREE.WebGLRenderer} renderer 
+ * @param {THREE.Scene} scene 
+ * @param {THREE.PerspectiveCamera} camera 
+ */
+function animate(orbitControls, renderer, scene, camera) {
+	requestAnimationFrame(() => animate(orbitControls, renderer, scene, camera));
+	orbitControls.update();
+	renderer.render(scene, camera);
+}
+
 // Create Globe
 const Globe = new ThreeGlobe({
 	waitForGlobeReady: true,
@@ -31,17 +44,16 @@ globeMaterial.shininess = 0.9;
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.getElementById(RENDER_GLOBE_DOM_ELEMENT_ID).appendChild(renderer.domElement);
 
-// Setup light sources
-const mainDirectionalLight = new THREE.DirectionalLight(0xffffff, 8);
-mainDirectionalLight.position.set(-800, 2000, 400);
+// Setup camera light sources
+const mainDirectionalCameraLight = new THREE.DirectionalLight(0xffffff, 8);
+mainDirectionalCameraLight.position.set(-800, 2000, 400);
 
-const secondaryDirectionalLight = new THREE.DirectionalLight(0x7982f6, 8.2);
-secondaryDirectionalLight.position.set(-200, 500, 200);
+const secondaryDirectionalCameraLight = new THREE.DirectionalLight(0x7982f6, 8.2);
+secondaryDirectionalCameraLight.position.set(-200, 500, 200);
 
-const pointLight = new THREE.PointLight(0x8566cc, 4.1);
-pointLight.position.set(-200, 500, 200);
+const pointCameraLight = new THREE.PointLight(0x8566cc, 4.1);
+pointCameraLight.position.set(-200, 500, 200);
 
 // Setup camera
 const camera = new THREE.PerspectiveCamera();
@@ -49,16 +61,19 @@ camera.aspect = window.innerWidth / window.innerHeight;
 camera.position.z = 400;
 camera.position.x = 0;
 camera.position.y = 0;
-camera.add(mainDirectionalLight);
-camera.add(secondaryDirectionalLight);
-camera.add(pointLight);
+camera.add(mainDirectionalCameraLight);
+camera.add(secondaryDirectionalCameraLight);
+camera.add(pointCameraLight);
 camera.updateProjectionMatrix();
+
+// Setup scene light sources
+const ambientSceneLight = new THREE.AmbientLight(0xbbbbbb, 0.3);
 
 // Setup scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x040d21);
 scene.fog = new THREE.Fog(0x535ef3, 400, 2000);
-scene.add(new THREE.AmbientLight(0xbbbbbb, 0.3));
+scene.add(ambientSceneLight);
 scene.add(Globe);
 scene.add(camera);
 
@@ -67,10 +82,8 @@ const orbitControls = new OrbitControls(camera, renderer.domElement);
 /*** DISABLE ABILITY TO ZOOM */
 orbitControls.enableZoom = false;
 
-function animate() {
-	orbitControls.update();
-	renderer.render(scene, camera);
-	requestAnimationFrame(animate);
-}
+// Add renderer to DOM
+document.getElementById(RENDER_GLOBE_DOM_ELEMENT_ID).appendChild(renderer.domElement);
 
-animate();
+// Begin animation
+animate(orbitControls, renderer, scene, camera);
